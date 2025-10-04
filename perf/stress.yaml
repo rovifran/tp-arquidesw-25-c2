@@ -1,0 +1,53 @@
+config:
+  target: 'http://localhost:5555'
+  plugins:
+    statsd:
+      host: localhost
+      port: 8125
+      prefix: "artillery-stress"
+  pool: 100
+  phases:
+    # Warm-up phase
+    - name: Warm-up
+      duration: 60
+      arrivalRate: 5
+      rampTo: 10
+    # Gradually increase load to find breaking point
+    - name: Stress Level 1
+      duration: 120
+      arrivalRate: 10
+    - name: Stress Level 2
+      duration: 120
+      arrivalRate: 20
+    - name: Stress Level 3
+      duration: 120
+      arrivalRate: 30
+    - name: Stress Level 4
+      duration: 120
+      arrivalRate: 40
+    - name: Stress Level 5
+      duration: 120
+      arrivalRate: 50
+    - name: Stress Level 6
+      duration: 120
+      arrivalRate: 60
+    - name: Stress Level 7
+      duration: 120
+      arrivalRate: 70
+    # Cool down to see recovery
+    - name: Cool-down
+      duration: 60
+      arrivalRate: 5
+
+scenarios:
+  - name: Stress Test (/exchange)
+    flow:
+      - post:
+          url: '/exchange'
+          json:
+            baseCurrency: 'ARS'
+            counterCurrency: 'USD'
+            baseAccountId: 1
+            counterAccountId: 2
+            baseAmount: 50
+      - think: 1

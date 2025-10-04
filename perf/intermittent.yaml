@@ -1,0 +1,75 @@
+config:
+  target: 'http://localhost:5555'
+  plugins:
+    statsd:
+      host: localhost
+      port: 8125
+      prefix: "artillery-intermittent"
+  pool: 50
+  phases:
+    # Pattern: burst of requests, pause, repeat to accumulate logs
+    - name: Burst 1
+      duration: 30
+      arrivalRate: 10
+    - name: Pause 1
+      duration: 30
+      arrivalRate: 1
+    - name: Burst 2
+      duration: 30
+      arrivalRate: 10
+    - name: Pause 2
+      duration: 30
+      arrivalRate: 1
+    - name: Burst 3
+      duration: 30
+      arrivalRate: 10
+    - name: Pause 3
+      duration: 30
+      arrivalRate: 1
+    - name: Burst 4
+      duration: 30
+      arrivalRate: 10
+    - name: Pause 4
+      duration: 30
+      arrivalRate: 1
+    - name: Burst 5
+      duration: 30
+      arrivalRate: 10
+    - name: Pause 5
+      duration: 30
+      arrivalRate: 1
+    - name: Burst 6
+      duration: 30
+      arrivalRate: 10
+    - name: Pause 6
+      duration: 30
+      arrivalRate: 1
+    - name: Burst 7
+      duration: 30
+      arrivalRate: 10
+    - name: Pause 7
+      duration: 30
+      arrivalRate: 1
+    - name: Burst 8
+      duration: 30
+      arrivalRate: 10
+    - name: Pause 8
+      duration: 30
+      arrivalRate: 1
+    # Final sustained burst to test with accumulated logs
+    - name: Final Burst
+      duration: 60
+      arrivalRate: 15
+
+scenarios:
+  - name: Intermittent Load Test (/exchange)
+    flow:
+      - post:
+          url: '/exchange'
+          json:
+            baseCurrency: 'ARS'
+            counterCurrency: 'USD'
+            baseAccountId: 1
+            counterAccountId: 2
+            baseAmount: 50
+      - think: 1

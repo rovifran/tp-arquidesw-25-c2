@@ -1,0 +1,68 @@
+config:
+  target: 'http://localhost:5555'
+  plugins:
+    statsd:
+      host: localhost
+      port: 8125
+      prefix: "artillery-gaussian"
+  pool: 50
+  phases:
+    # Ascending slope of the bell curve
+    - name: Ramp Up 1
+      duration: 30
+      arrivalRate: 1
+      rampTo: 5
+    - name: Ramp Up 2
+      duration: 30
+      arrivalRate: 5
+      rampTo: 10
+    - name: Ramp Up 3
+      duration: 30
+      arrivalRate: 10
+      rampTo: 20
+    - name: Ramp Up 4
+      duration: 30
+      arrivalRate: 20
+      rampTo: 30
+    - name: Ramp Up 5
+      duration: 30
+      arrivalRate: 30
+      rampTo: 40
+    # Peak of the bell curve (sustained high load)
+    - name: Peak
+      duration: 60
+      arrivalRate: 40
+    # Descending slope of the bell curve
+    - name: Ramp Down 1
+      duration: 30
+      arrivalRate: 40
+      rampTo: 30
+    - name: Ramp Down 2
+      duration: 30
+      arrivalRate: 30
+      rampTo: 20
+    - name: Ramp Down 3
+      duration: 30
+      arrivalRate: 20
+      rampTo: 10
+    - name: Ramp Down 4
+      duration: 30
+      arrivalRate: 10
+      rampTo: 5
+    - name: Ramp Down 5
+      duration: 30
+      arrivalRate: 5
+      rampTo: 1
+
+scenarios:
+  - name: Gaussian Load Test (/exchange)
+    flow:
+      - post:
+          url: '/exchange'
+          json:
+            baseCurrency: 'ARS'
+            counterCurrency: 'USD'
+            baseAccountId: 1
+            counterAccountId: 2
+            baseAmount: 50
+      - think: 1
