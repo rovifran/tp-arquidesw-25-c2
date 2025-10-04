@@ -40,6 +40,22 @@ config:
       duration: 30
       arrivalRate: 128
       rampTo: 256
+    - name: Exponential Phase 9
+      duration: 30
+      arrivalRate: 256
+      rampTo: 512
+    - name: Exponential Phase 10
+      duration: 30
+      arrivalRate: 512
+      rampTo: 1024
+    - name: Exponential Phase 11
+      duration: 30
+      arrivalRate: 1024
+      rampTo: 2048
+    - name: Exponential Phase 12
+      duration: 30
+      arrivalRate: 2048
+      rampTo: 4096
 
 scenarios:
   - name: Exponential Load Test (/exchange)

@@ -1,0 +1,74 @@
+config:
+  environments:
+    api:
+      target: 'http://localhost:5555'
+      plugins:
+        statsd:
+          host: localhost
+          port: 8125
+          prefix: "artillery-cache"
+
+  pool: 50 # All HTTP requests from all virtual users will be sent over the same connections
+
+  phases:
+    - name: Accounts Ramp
+      duration: 15
+      arrivalRate: 1
+      rampTo: 5
+    - name: Rates Ramp
+      duration: 15
+      arrivalRate: 1
+      rampTo: 5
+    - name: Log Ramp
+      duration: 15
+      arrivalRate: 1
+      rampTo: 5
+    - name: Combined Test
+      duration: 60
+      arrivalRate: 5
+    
+
+scenarios:
+  - name: Individual Endpoint Tests
+    flow:
+      - get:
+          url: '/accounts'
+  - name: Individual Endpoint Tests
+    flow:
+      - get:
+          url: '/rates'
+  - name: Individual Endpoint Tests
+    flow:
+      - get:
+          url: '/log'
+  - name: Cache Test - All GET Endpoints
+    flow:
+      - get:
+          url: '/accounts'
+          capture:
+            - json: "$"
+              as: "accounts"
+      - get:
+          url: '/rates'
+          capture:
+            - json: "$"
+              as: "rates"
+      - get:
+          url: '/log'
+          capture:
+            - json: "$"
+              as: "log"
+      # Test cache effectiveness by making repeated requests
+      - get:
+          url: '/accounts'
+      - get:
+          url: '/rates'
+      - get:
+          url: '/log'
+      # Another round to test cache consistency
+      - get:
+          url: '/accounts'
+      - get:
+          url: '/rates'
+      - get:
+          url: '/log'
