@@ -1,0 +1,36 @@
+config:
+  environments:
+    api:
+      target: 'http://localhost:5555'
+      plugins:
+        statsd:
+          host: localhost
+          port: 8125
+          prefix: "artillery-api"
+  
+  pool: 100
+  phases:
+    - name: "Baseline"
+      duration: 60
+      arrivalRate: 5
+    - name: "Sudden Spike"
+      duration: 30
+      arrivalRate: 50
+    - name: "Recovery"
+      duration: 60
+      arrivalRate: 5
+
+scenarios:
+  - name: "Spike Test"
+    flow:
+      - get:
+          url: '/rates'
+      - post:
+          url: '/exchange'
+          json:
+            baseCurrency: 'ARS'
+            counterCurrency: 'USD'
+            baseAccountId: 1
+            counterAccountId: 2
+            baseAmount: 50
+      - think: 1
