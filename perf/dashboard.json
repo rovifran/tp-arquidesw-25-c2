@@ -35,7 +35,7 @@
       "fillGradient": 0,
       "gridPos": {
         "h": 7,
-        "w": 24,
+        "w": 12,
         "x": 0,
         "y": 0
       },
@@ -143,9 +143,9 @@
       "fillGradient": 0,
       "gridPos": {
         "h": 7,
-        "w": 24,
-        "x": 0,
-        "y": 7
+        "w": 12,
+        "x": 12,
+        "y": 0
       },
       "height": "250",
       "hiddenSeries": false,
@@ -257,7 +257,7 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 14
+        "y": 7
       },
       "height": "250px",
       "hiddenSeries": false,
@@ -365,7 +365,7 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 21
+        "y": 14
       },
       "height": "250px",
       "hiddenSeries": false,
@@ -485,7 +485,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 28
+        "y": 21
       },
       "height": "250px",
       "hiddenSeries": false,
@@ -601,7 +601,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 28
+        "y": 21
       },
       "height": "250px",
       "hiddenSeries": false,
