@@ -12,13 +12,19 @@ config:
   phases:
     - name: "Baseline"
       duration: 60
-      arrivalRate: 5
+      arrivalRate: 50
     - name: "Sudden Spike"
       duration: 30
-      arrivalRate: 5000
+      arrivalRate: 256
     - name: "Recovery"
-      duration: 60
-      arrivalRate: 5
+      duration: 15
+      arrivalRate: 50
+    - name: "Sudden Spike 2"
+      duration: 30
+      arrivalRate: 256
+    - name: "Recovery 2"
+      duration: 15
+      arrivalRate: 50
 
 scenarios:
   - name: "Spike Test"

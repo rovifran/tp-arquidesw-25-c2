@@ -1,4 +1,5 @@
 import express from "express";
+import { StatsD } from "hot-shots";
 
 import {
   init as exchangeInit,
@@ -14,6 +15,15 @@ await exchangeInit();
 
 const app = express();
 const port = 3000;
+
+const statsd = new StatsD({
+  host: "graphite",
+  port: 8125,
+  prefix: "exchange.",
+  errorHandler: (error) => {
+    console.error("StatsD error:", error);
+  },
+});
 
 app.use(express.json());
 
@@ -64,6 +74,7 @@ app.get("/log", (req, res) => {
 // EXCHANGE endpoint
 
 app.post("/exchange", async (req, res) => {
+  const startNs = process.hrtime.bigint();
   const {
     baseCurrency,
     counterCurrency,
@@ -85,11 +96,20 @@ app.post("/exchange", async (req, res) => {
   const exchangeRequest = { ...req.body };
   const exchangeResult = await exchange(exchangeRequest);
 
-  if (exchangeResult.ok) {
-    res.status(200).json(exchangeResult);
+  const statusCode = exchangeResult.ok ? 200 : 500;
+  // send response first
+  res.status(statusCode).json(exchangeResult);
+
+  // record metrics after sending
+  const durationMs = Number((process.hrtime.bigint() - startNs) / 1000000n);
+  statsd.timing("request.exchange", durationMs);
+  statsd.increment("requests.total");
+  if (statusCode >= 200 && statusCode < 300) {
+    statsd.increment("requests.ok");
   } else {
-    res.status(500).json(exchangeResult);
+    statsd.increment("requests.error");
   }
+  statsd.increment(`requests.code.${statusCode}`);
 });
 
 app.listen(port, () => {

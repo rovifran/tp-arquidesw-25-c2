@@ -115,14 +115,20 @@ export async function exchange(exchangeRequest) {
         //could not transfer to clients' counter account, return base amount to client
         await transfer(baseAccount.id, clientBaseAccountId, baseAmount);
         exchangeResult.obs = "Could not transfer to clients' account";
+        // track error cause
+        statsd.increment("errors.obs.transfer_failed");
       }
     } else {
       //could not withdraw from clients' account
       exchangeResult.obs = "Could not withdraw from clients' account";
+      // track error cause
+      statsd.increment("errors.obs.withdraw_failed");
     }
   } else {
     //not enough funds on internal counter account
     exchangeResult.obs = "Not enough funds on counter currency account";
+    // track error cause
+    statsd.increment("errors.obs.insufficient_funds");
   }
 
   //log the transaction and return it
