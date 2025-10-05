@@ -401,6 +401,10 @@
         {
           "alias": "asPercent(stats.gauges.cadvisor.exchange-api-1.memory_usage, 34359738368)",
           "yaxis": 1
+        },
+        {
+          "alias": "asPercent(stats.gauges.cadvisor.$container.rootfs_usage, 34359738368)",
+          "yaxis": 1
         }
       ],
       "spaceLength": 10,
@@ -419,6 +423,16 @@
           "refCount": 0,
           "refId": "B",
           "target": "alias(asPercent(stats.gauges.cadvisor.$container.memory_working_set, 34359738368), 'Memory')"
+        },
+        {
+          "hide": false,
+          "refId": "E",
+          "target": "alias(asPercent(stats.gauges.cadvisor.$container.fs_usage, stats.gauges.cadvisor.$container.fs_limit), 'Disk %')"
+        },
+        {
+          "hide": false,
+          "refId": "F",
+          "target": "alias(scale(stats.gauges.cadvisor.$container.fs_usage, 0.000000001), 'Disk used (GB)')"
         }
       ],
       "thresholds": [],
@@ -638,19 +652,19 @@
       "targets": [
         {
           "refId": "A",
-          "target": "alias(stats_counts.exchange.net.USD, 'USD Net')"
+          "target": "alias(integral(stats_counts.exchange.net.USD), 'USD Net')"
         },
         {
           "refId": "B",
-          "target": "alias(stats_counts.exchange.net.ARS, 'ARS Net')"
+          "target": "alias(integral(stats_counts.exchange.net.ARS), 'ARS Net')"
         },
         {
           "refId": "C",
-          "target": "alias(stats_counts.exchange.net.EUR, 'EUR Net')"
+          "target": "alias(integral(stats_counts.exchange.net.EUR), 'EUR Net')"
         },
         {
           "refId": "D",
-          "target": "alias(stats_counts.exchange.net.BRL, 'BRL Net')"
+          "target": "alias(integral(stats_counts.exchange.net.BRL), 'BRL Net')"
         }
       ],
       "thresholds": [],
@@ -674,7 +688,7 @@
       "yaxes": [
         {
           "format": "short",
-          "label": "Neto",
+          "label": "Neto acumulado",
           "logBase": 1,
           "max": null,
           "min": null,

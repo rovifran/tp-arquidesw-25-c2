@@ -14,8 +14,8 @@ config:
       duration: 60
       arrivalRate: 5
     - name: "Sudden Spike"
-      duration: 30
-      arrivalRate: 1500
+      duration: 20
+      arrivalRate: 2500
     - name: "Recovery"
       duration: 60
       arrivalRate: 5

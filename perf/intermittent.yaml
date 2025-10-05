@@ -10,56 +10,55 @@ config:
     # Pattern: burst of requests, pause, repeat to accumulate logs
     - name: Burst 1
       duration: 10
-      arrivalRate: 10
+      arrivalRate: 100
     - name: Pause 1
       duration: 10
       arrivalRate: 1
     - name: Burst 2
       duration: 10
-      arrivalRate: 10
+      arrivalRate: 100
     - name: Pause 2
       duration: 10
       arrivalRate: 1
     - name: Burst 3
       duration: 10
-      arrivalRate: 10
+      arrivalRate: 100
     - name: Pause 3
       duration: 10
       arrivalRate: 1
     - name: Burst 4
       duration: 10
-      arrivalRate: 10
+      arrivalRate: 100
     - name: Pause 4
       duration: 10
       arrivalRate: 1
     - name: Burst 5
       duration: 10
-      arrivalRate: 10
+      arrivalRate: 100
     - name: Pause 5
       duration: 10
       arrivalRate: 1
     - name: Burst 6
       duration: 10
-      arrivalRate: 10
+      arrivalRate: 100
     - name: Pause 6
       duration: 10
       arrivalRate: 1
     - name: Burst 7
       duration: 10
-      arrivalRate: 10
+      arrivalRate: 100
     - name: Pause 7
       duration: 10
       arrivalRate: 1
     - name: Burst 8
       duration: 10
-      arrivalRate: 10
+      arrivalRate: 100
     - name: Pause 8
       duration: 10
       arrivalRate: 1
-    # Final sustained burst to test with accumulated logs
     - name: Final Burst
-      duration: 60
-      arrivalRate: 15
+      duration: 10
+      arrivalRate: 200
 
 scenarios:
   - name: Intermittent Load Test (/exchange)
@@ -72,4 +71,11 @@ scenarios:
             baseAccountId: 1
             counterAccountId: 2
             baseAmount: 50
+      - think: 1
+      - put:
+          url: '/rates'
+          json:
+            baseCurrency: "USD"
+            counterCurrency: "ARS"
+            rate: 1500
       - think: 1
