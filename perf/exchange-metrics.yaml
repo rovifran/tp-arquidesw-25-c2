@@ -1,0 +1,99 @@
+config:
+  environments:
+    api:
+      target: 'http://localhost:5555'
+      plugins:
+        statsd:
+          host: localhost
+          port: 8125
+          prefix: "artillery-api"
+
+  pool: 10 # All HTTP requests from all virtual users will be sent over the same connections
+
+  phases:
+    - name: Warm-up
+      duration: 10
+      arrivalRate: 1
+    - name: Test exchanges with metrics
+      duration: 90
+      arrivalRate: 2
+    
+
+scenarios:
+  - name: Exchange Operations USD-ARS (Metrics Test)
+    weight: 40
+    flow:
+      - post:
+          url: '/exchange'
+          json:
+            baseCurrency: 'USD'
+            counterCurrency: 'ARS'
+            baseAccountId: 1
+            counterAccountId: 2
+            baseAmount: 100
+          expect:
+            - statusCode: 200
+      - think: 1
+      - post:
+          url: '/exchange'
+          json:
+            baseCurrency: 'ARS'
+            counterCurrency: 'USD'
+            baseAccountId: 1
+            counterAccountId: 2
+            baseAmount: 10000
+          expect:
+            - statusCode: 200
+      - think: 2
+
+  - name: Exchange Operations EUR-ARS (Metrics Test)
+    weight: 30
+    flow:
+      - post:
+          url: '/exchange'
+          json:
+            baseCurrency: 'EUR'
+            counterCurrency: 'ARS'
+            baseAccountId: 1
+            counterAccountId: 2
+            baseAmount: 50
+          expect:
+            - statusCode: 200
+      - think: 1
+      - post:
+          url: '/exchange'
+          json:
+            baseCurrency: 'ARS'
+            counterCurrency: 'EUR'
+            baseAccountId: 1
+            counterAccountId: 2
+            baseAmount: 90000
+          expect:
+            - statusCode: 200
+      - think: 2
+
+  - name: Exchange Operations BRL-ARS (Metrics Test)
+    weight: 30
+    flow:
+      - post:
+          url: '/exchange'
+          json:
+            baseCurrency: 'BRL'
+            counterCurrency: 'ARS'
+            baseAccountId: 1
+            counterAccountId: 2
+            baseAmount: 200
+          expect:
+            - statusCode: 200
+      - think: 1
+      - post:
+          url: '/exchange'
+          json:
+            baseCurrency: 'ARS'
+            counterCurrency: 'BRL'
+            baseAccountId: 1
+            counterAccountId: 2
+            baseAmount: 55000
+          expect:
+            - statusCode: 200
+      - think: 2

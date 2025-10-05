@@ -1,6 +1,21 @@
 import { nanoid } from "nanoid";
+import { StatsD } from "hot-shots";
 
-import { init as stateInit, getAccounts as stateAccounts, getRates as stateRates, getLog as stateLog } from "./state.js";
+import {
+  init as stateInit,
+  getAccounts as stateAccounts,
+  getRates as stateRates,
+  getLog as stateLog,
+} from "./state.js";
+
+const statsd = new StatsD({
+  host: "graphite",
+  port: 8125,
+  prefix: "exchange.",
+  errorHandler: (error) => {
+    console.error("StatsD error:", error);
+  },
+});
 
 let accounts;
 let rates;
@@ -90,6 +105,12 @@ export async function exchange(exchangeRequest) {
         counterAccount.balance -= counterAmount;
         exchangeResult.ok = true;
         exchangeResult.counterAmount = counterAmount;
+
+        statsd.increment(`volume.${baseCurrency}`, baseAmount);
+        statsd.increment(`volume.${counterCurrency}`, counterAmount);
+
+        statsd.increment(`net.${baseCurrency}`, -baseAmount);
+        statsd.increment(`net.${counterCurrency}`, counterAmount);
       } else {
         //could not transfer to clients' counter account, return base amount to client
         await transfer(baseAccount.id, clientBaseAccountId, baseAmount);
