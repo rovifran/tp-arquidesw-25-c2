@@ -1,6 +1,10 @@
 services:
     api:
       build: ./app
+    api2:
+      build: ./app
+    api3:
+      build: ./app
 
     nginx:
         image: nginx:1.27.4
@@ -11,6 +15,8 @@ services:
             - ./store/static/files:/static:ro
         links:
             - api
+            - api2
+            - api3
 
     graphite:
         image: graphiteapp/graphite-statsd:1.1.10-5
