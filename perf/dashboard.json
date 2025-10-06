@@ -363,7 +363,7 @@
       "fillGradient": 0,
       "gridPos": {
         "h": 7,
-        "w": 24,
+        "w": 12,
         "x": 0,
         "y": 14
       },
@@ -399,11 +399,7 @@
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "alias": "asPercent(stats.gauges.cadvisor.exchange-api-1.memory_usage, 34359738368)",
-          "yaxis": 1
-        },
-        {
-          "alias": "asPercent(stats.gauges.cadvisor.$container.rootfs_usage, 34359738368)",
+          "alias": "Memory",
           "yaxis": 1
         }
       ],
@@ -423,16 +419,6 @@
           "refCount": 0,
           "refId": "B",
           "target": "alias(asPercent(stats.gauges.cadvisor.$container.memory_working_set, 34359738368), 'Memory')"
-        },
-        {
-          "hide": false,
-          "refId": "E",
-          "target": "alias(asPercent(stats.gauges.cadvisor.$container.fs_usage, stats.gauges.cadvisor.$container.fs_limit), 'Disk %')"
-        },
-        {
-          "hide": false,
-          "refId": "F",
-          "target": "alias(scale(stats.gauges.cadvisor.$container.fs_usage, 0.000000001), 'Disk used (GB)')"
         }
       ],
       "thresholds": [],
@@ -464,6 +450,112 @@
         },
         {
           "format": "Bps",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "Disk Used": "#E24D42"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Graphite",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 14
+      },
+      "height": "250px",
+      "hiddenSeries": false,
+      "hideTimeOverride": false,
+      "id": 8,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "hideEmpty": true,
+        "hideZero": false,
+        "max": true,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "sideWidth": null,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 2,
+      "links": [],
+      "nullPointMode": "connected",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.3.10",
+      "pointradius": 5,
+      "points": true,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "hide": false,
+          "refCount": 0,
+          "refId": "A",
+          "target": "alias(scale(stats.gauges.cadvisor.$container.-dev-nvme0n1p4.fs_usage, 0.000001), 'Disk Used (MB)')",
+          "textEditor": false
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Disk Usage",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "decmbytes",
+          "label": "Disk Usage (MB)",
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
           "label": null,
           "logBase": 1,
           "max": null,
