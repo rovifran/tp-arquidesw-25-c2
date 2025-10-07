@@ -760,13 +760,13 @@
           },
           {
             "selected": false,
-            "text": "exchange-api-2",
-            "value": "exchange-api-2"
+            "text": "exchange-api2-1",
+            "value": "exchange-api2-1"
           },
           {
             "selected": false,
-            "text": "exchange-api-3",
-            "value": "exchange-api-3"
+            "text": "exchange-api3-1",
+            "value": "exchange-api3-1"
           },
           {
             "selected": false,
@@ -789,7 +789,7 @@
             "value": "exchange-nginx-1"
           }
         ],
-        "query": "exchange-api-1, exchange-api-2, exchange-api-3, exchange-cadvisor-1, exchange-grafana-1, exchange-graphite-1,  exchange-nginx-1, exchange_bbox_1",
+        "query": "exchange-api-1, exchange-api2-1, exchange-api3-1, exchange-cadvisor-1, exchange-grafana-1, exchange-graphite-1,  exchange-nginx-1, exchange_bbox_1",
         "queryValue": "",
         "skipUrlSync": false,
         "type": "custom"
