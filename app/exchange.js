@@ -1,50 +1,44 @@
 import { nanoid } from "nanoid";
 
-import { init as stateInit, getAccounts as stateAccounts, getRates as stateRates, getLog as stateLog } from "./state.js";
-
-let accounts;
-let rates;
-let log;
+import { 
+  init as stateInit, 
+  getAccounts as getAccountsFromRedis, 
+  getRates as getRatesFromRedis, 
+  getLog as getLogFromRedis, 
+  updateAccountBalance,
+  updateRate,
+  addLogEntry
+} from "./state-redis.js";
 
 //call to initialize the exchange service
 export async function init() {
   await stateInit();
-
-  accounts = stateAccounts();
-  rates = stateRates();
-  log = stateLog();
 }
 
 //returns all internal accounts
-export function getAccounts() {
-  return accounts;
+export async function getAccounts() {
+  return await getAccountsFromRedis();
 }
 
 //sets balance for an account
-export function setAccountBalance(accountId, balance) {
-  const account = findAccountById(accountId);
-
-  if (account != null) {
-    account.balance = balance;
-  }
+export async function setAccountBalance(accountId, balance) {
+  return await updateAccountBalance(accountId, balance);
 }
 
 //returns all current exchange rates
-export function getRates() {
-  return rates;
+export async function getRates() {
+  return await getRatesFromRedis();
 }
 
 //returns the whole transaction log
-export function getLog() {
-  return log;
+export async function getLog() {
+  return await getLogFromRedis();
 }
 
 //sets the exchange rate for a given pair of currencies, and the reciprocal rate as well
-export function setRate(rateRequest) {
+export async function setRate(rateRequest) {
   const { baseCurrency, counterCurrency, rate } = rateRequest;
-
-  rates[baseCurrency][counterCurrency] = rate;
-  rates[counterCurrency][baseCurrency] = Number((1 / rate).toFixed(5));
+  await updateRate(baseCurrency, counterCurrency, rate);
 }
 
 //executes an exchange operation
@@ -58,13 +52,15 @@ export async function exchange(exchangeRequest) {
   } = exchangeRequest;
 
   //get the exchange rate
+  const rates = await getRatesFromRedis();
   const exchangeRate = rates[baseCurrency][counterCurrency];
   //compute the requested (counter) amount
   const counterAmount = baseAmount * exchangeRate;
   //find our account on the provided (base) currency
-  const baseAccount = findAccountByCurrency(baseCurrency);
+  const accounts = await getAccountsFromRedis();
+  const baseAccount = findAccountByCurrency(accounts, baseCurrency);
   //find our account on the counter currency
-  const counterAccount = findAccountByCurrency(counterCurrency);
+  const counterAccount = findAccountByCurrency(accounts, counterCurrency);
 
   //construct the result object with defaults
   const exchangeResult = {
@@ -86,8 +82,8 @@ export async function exchange(exchangeRequest) {
         await transfer(counterAccount.id, clientCounterAccountId, counterAmount)
       ) {
         //all good, update balances
-        baseAccount.balance += baseAmount;
-        counterAccount.balance -= counterAmount;
+        await updateAccountBalance(baseAccount.id, baseAccount.balance + baseAmount);
+        await updateAccountBalance(counterAccount.id, counterAccount.balance - counterAmount);
         exchangeResult.ok = true;
         exchangeResult.counterAmount = counterAmount;
       } else {
@@ -105,7 +101,7 @@ export async function exchange(exchangeRequest) {
   }
 
   //log the transaction and return it
-  log.push(exchangeResult);
+  await addLogEntry(exchangeResult);
 
   return exchangeResult;
 }
@@ -119,7 +115,7 @@ async function transfer(fromAccountId, toAccountId, amount) {
   );
 }
 
-function findAccountByCurrency(currency) {
+function findAccountByCurrency(accounts, currency) {
   for (let account of accounts) {
     if (account.currency == currency) {
       return account;
@@ -129,7 +125,8 @@ function findAccountByCurrency(currency) {
   return null;
 }
 
-function findAccountById(id) {
+async function findAccountById(id) {
+  const accounts = await getAccountsFromRedis();
   for (let account of accounts) {
     if (account.id == id) {
       return account;

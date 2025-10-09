@@ -1,6 +1,18 @@
 services:
+    redis:
+        image: redis:7.2-alpine
+        ports:
+            - "6379:6379"
+        volumes:
+            - redis_data:/data
+        command: redis-server --appendonly yes
+
     api:
       build: ./app
+      depends_on:
+        - redis
+      environment:
+        - REDIS_URL=redis://redis:6379
 
     nginx:
         image: nginx:1.27.4
@@ -44,4 +56,6 @@ services:
 
 volumes:
     grafana_config:
+        driver: local
+    redis_data:
         driver: local
